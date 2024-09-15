@@ -26,9 +26,9 @@
             <div class="col-12 col-sm-6 col-md-4">
                 <div class="card mb-4">
                     {% if moulin.photo %}
-                        <img class="card-img-top d-block mx-auto img-fluid" src="{{ url_for('static', filename=moulin.photo) }}" alt="{{ moulin.modele }}">
+                        <img class="card-img-top d-block mx-auto img-fluid moulin-photo" src="{{ url_for('static', filename=moulin.photo) }}" alt="{{ moulin.modele }}">
                     {% else %}
-                        <img class="card-img-top d-block mx-auto img-fluid" src="{{ url_for('static', filename='images/default.png') }}" alt="Image par défaut">
+                        <img class="card-img-top d-block mx-auto img-fluid moulin-photo" src="{{ url_for('static', filename='images/default.png') }}" alt="Image par défaut">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ moulin.marque }} - {{ moulin.modele }}</h5>
@@ -54,4 +54,13 @@
             </div>
         {% endfor %}
     </div>
+
+    <style>
+        @media (max-width: 576px) {
+            .moulin-photo {
+                width: 100px;
+                height: auto;
+            }
+        }
+    </style>
 {% endblock %}
