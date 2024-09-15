@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    restart: always
+    container_name: $SERVICE
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development  # ou 'production' pour l'environnement de production
+    volumes:
+      - .:/app
+    networks:
+      - default
+    labels:
+      - "autoupdate=monitor" # https://github.com/PAPAMICA/container-updater
+      - "traefik.enable=true"
+      - "traefik.http.routers.$SERVICE.rule=Host(`$URL`)"
+      - "traefik.http.routers.$SERVICE.tls.certresolver=http"
+      - "traefik.http.services.$SERVICE.loadbalancer.server.port=5000"
+      - "traefik.docker.network=$NETWORK"
+networks:
+  default:
+    external:
+      name: $NETWORK
