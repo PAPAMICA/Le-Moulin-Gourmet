@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Vos moulins à épices{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Vos moulins à épices</h1>
+        <a href="{{ url_for('ajouter_moulin') }}" class="btn btn-primary mb-3">Ajouter un Moulin</a>
+    </div>
+
+    <form method="post" class="form-inline mb-3">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.type_moulin.label(class="mr-2") }}
+            {{ form.type_moulin(class="form-control mr-3") }}
+        </div>
+        <div class="form-group">
+            {{ form.tri.label(class="mr-2") }}
+            {{ form.tri(class="form-control mr-3") }}
+        </div>
+        {{ form.submit(class="btn btn-secondary") }}
+    </form>
+
+    <div class="row">
+        {% for moulin in moulins %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    {% if moulin.photo %}
+                        <img class="card-img-top d-block mx-auto" src="{{ url_for('static', filename=moulin.photo) }}" alt="{{ moulin.modele }}" style="max-width: 150px;">
+                    {% else %}
+                        <img class="card-img-top d-block mx-auto" src="{{ url_for('static', filename='images/default.png') }}" alt="Image par défaut" style="max-width: 150px;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ moulin.marque }} - {{ moulin.modele }}</h5>
+                        <p class="card-text"><strong>Taille (cm) :</strong> {{ moulin.taille }}</p>
+                        <p class="card-text"><strong>Couleur :</strong> {{ moulin.couleur }}</p>
+                        <p class="card-text"><strong>Origine :</strong> {{ moulin.origine }}</p>
+                        <p class="card-text"><strong>Type :</strong> {{ moulin.type_moulin.capitalize() }}</p>
+
+                        <hr>
+                        {% if moulin.poivre %}
+                            <h6>Informations sur l'épice :</h6>
+                            <p class="card-text"><strong>Nom :</strong> {{ moulin.poivre.nom }}</p>
+                            <p class="card-text"><strong>Description :</strong> {{ moulin.poivre.description }}</p>
+                            <p class="card-text"><strong>Pays d'origine :</strong> {{ moulin.poivre.pays_origine }}</p>
+                            <p class="card-text"><strong>Intensité :</strong> {{ moulin.poivre.intensite }}</p>
+                            <p class="card-text"><strong>Utilisations :</strong> {{ moulin.poivre.utilisations }}</p>
+                        {% else %}
+                            <p class="card-text">Aucune épice associée à ce moulin.</p>
+                        {% endif %}
+
+                        <a href="{{ url_for('editer_moulin', id=moulin.id) }}" class="btn btn-secondary d-block mx-auto">Éditer</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

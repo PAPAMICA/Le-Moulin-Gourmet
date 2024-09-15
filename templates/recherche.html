@@ -1,0 +1,195 @@
+<!-- templates/recherche.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Recherche de Poivre{% endblock %}
+
+{% block content %}
+    <h1>Rechercher un Poivre</h1>
+
+    <!-- Conteneur des aliments sélectionnés -->
+    <div class="selected-aliments mb-3" id="selected-aliments-container"></div>
+
+    <!-- Barre de recherche et bouton rechercher -->
+    <div class="input-group mb-3">
+        <input type="text" id="search-input" class="form-control" placeholder="Recherchez un aliment...">
+        <div class="input-group-append">
+            <button id="rechercher-btn" class="btn btn-primary">Rechercher</button>
+        </div>
+    </div>
+
+    <!-- Conteneur pour afficher les tuiles d'aliments, caché par défaut -->
+    <div class="d-flex flex-wrap" id="aliments-container" style="display: none;">
+        {% for aliment_key, aliment_nom in aliments %}
+            <div class="card m-2 aliment-card" data-aliment="{{ aliment_key }}" data-aliment-nom="{{ aliment_nom }}">
+                <img class="card-img-top" src="{{ url_for('static', filename='aliments/' + aliment_key + '.png') }}" alt="{{ aliment_nom }}" style="width: 100px; height: 100px; object-fit: cover; padding: 8px;" onerror="this.onerror=null;this.src='{{ url_for('static', filename='aliments/default.png') }}';">
+                <div class="card-body p-2 text-center">
+                    <p class="card-text">{{ aliment_nom }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Conteneur pour afficher les moulins trouvés dynamiquement -->
+    <div class="row" id="moulins-container"></div>
+
+    <input type="hidden" name="aliments" id="aliments-input">
+
+    <style>
+        .aliment-card {
+            width: 100px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: border 0.3s;
+            border-radius: 10px;
+        }
+        .aliment-card.selected {
+            border: 2px solid #007bff;
+        }
+        .selected-aliment-tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 5px;
+            position: relative;
+        }
+        .selected-aliment-tag .remove-aliment {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        /* Style pour les moulins */
+        .moulin-card {
+            width: 100%;
+        }
+        .moulin-card img {
+            max-width: 150px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function() {
+            var selectedAliments = [];
+
+            // Filtrer les tuiles en fonction de la saisie et afficher les tuiles dynamiquement
+            $('#search-input').on('keyup', function() {
+                var searchTerm = $(this).val().toLowerCase();
+                if (searchTerm) {
+                    $('#aliments-container').show();
+                    $('.aliment-card').each(function() {
+                        var alimentName = $(this).find('.card-text').text().toLowerCase();
+                        if (alimentName.indexOf(searchTerm) !== -1) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    $('#aliments-container').hide();
+                }
+            });
+
+            // Gérer la sélection/désélection des tuiles
+            $('.aliment-card').click(function() {
+                var alimentKey = $(this).data('aliment');
+                var alimentNom = $(this).data('aliment-nom');
+
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    selectedAliments = selectedAliments.filter(function(item) {
+                        return item !== alimentKey;
+                    });
+                    $('#selected-aliment-' + alimentKey).remove();
+                } else {
+                    $(this).addClass('selected');
+                    selectedAliments.push(alimentKey);
+                    $('#selected-aliments-container').append(
+                        '<div class="selected-aliment-tag" id="selected-aliment-' + alimentKey + '">' +
+                            alimentNom +
+                            '<span class="remove-aliment" data-aliment="' + alimentKey + '">&times;</span>' +
+                        '</div>'
+                    );
+                }
+                $('#aliments-input').val(selectedAliments.join(','));
+            });
+
+            // Supprimer un aliment sélectionné via les tags
+            $('#selected-aliments-container').on('click', '.remove-aliment', function() {
+                var alimentKey = $(this).data('aliment');
+                selectedAliments = selectedAliments.filter(function(item) {
+                    return item !== alimentKey;
+                });
+                $('#selected-aliment-' + alimentKey).remove();
+                $('.aliment-card[data-aliment="' + alimentKey + '"]').removeClass('selected');
+                $('#aliments-input').val(selectedAliments.join(','));
+            });
+
+            // Rechercher les moulins compatibles avec les aliments sélectionnés via AJAX
+            $('#rechercher-btn').click(function(e) {
+                e.preventDefault();
+                if (selectedAliments.length === 0) {
+                    alert('Veuillez sélectionner au moins un aliment.');
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ url_for('recherche_moulins') }}",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ aliments: selectedAliments }),
+                    success: function(response) {
+                        $('#moulins-container').empty();
+                        if (response.moulins && response.moulins.length > 0) {
+                            response.moulins.forEach(function(moulin) {
+                                var editUrl = "{{ url_for('editer_moulin', id=0) }}";
+                                editUrl = editUrl.replace('/0', '/' + moulin.id);
+                                
+                                var moulinHTML = 
+                                    '<div class="col-md-4">' +
+                                        '<div class="card mb-4 moulin-card">' +
+                                            '<img class="card-img-top" src="' + moulin.photo + '" alt="' + moulin.modele + '">' +
+                                            '<div class="card-body">' +
+                                                '<h5 class="card-title">' + moulin.marque + ' - ' + moulin.modele + '</h5>' +
+                                                '<p class="card-text"><strong>Taille :</strong> ' + moulin.taille + '</p>' +
+                                                '<p class="card-text"><strong>Couleur :</strong> ' + moulin.couleur + '</p>' +
+                                                '<p class="card-text"><strong>Origine :</strong> ' + moulin.origine + '</p>' +
+                                                '<p class="card-text"><strong>Type :</strong> ' + moulin.type_moulin + '</p>' +
+                                                '<hr>' +
+                                                '<h6>Informations sur le Poivre :</h6>' +
+                                                '<p class="card-text"><strong>Nom :</strong> ' + moulin.poivre.nom + '</p>' +
+                                                '<p class="card-text"><strong>Description :</strong> ' + moulin.poivre.description + '</p>' +
+                                                '<p class="card-text"><strong>Pays d\'origine :</strong> ' + moulin.poivre.pays_origine + '</p>' +
+                                                '<p class="card-text"><strong>Intensité :</strong> ' + moulin.poivre.intensite + '</p>' +
+                                                '<p class="card-text"><strong>Utilisations :</strong> ' + moulin.poivre.utilisations + '</p>' +
+                                                '<a href="' + editUrl + '" class="btn btn-secondary">Éditer</a>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>';
+                                $('#moulins-container').append(moulinHTML);
+                            });
+                        } else {
+                            $('#moulins-container').append('<div class="col-12"><p>Aucun moulin trouvé pour les aliments sélectionnés.</p></div>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert('Une erreur s\'est produite lors de la recherche.');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

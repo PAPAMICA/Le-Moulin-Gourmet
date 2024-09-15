@@ -1,0 +1,26 @@
+body {
+    background-color: #f8f9fa;
+}
+
+h1 {
+    margin-bottom: 30px;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.img {
+    max-width: 190px !important;
+}
+
+.card-img-top {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 190px !important;
+}

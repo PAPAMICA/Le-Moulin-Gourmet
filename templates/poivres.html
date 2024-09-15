@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Poivres{% endblock %}
+
+{% block content %}
+    <h1>Liste des Poivres</h1>
+    <div class="row">
+        {% for poivre in poivres %}
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ poivre.nom }}</h5>
+                        <p class="card-text">{{ poivre.description }}</p>
+                        <p><strong>Pays d'origine :</strong> {{ poivre.pays_origine }}</p>
+                        <p><strong>Intensité :</strong> {{ poivre.intensite }}</p>
+                        <p><strong>Utilisations :</strong> {{ poivre.utilisations }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

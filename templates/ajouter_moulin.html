@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un Moulin{% endblock %}
+
+{% block content %}
+    <h1>Ajouter un Moulin</h1>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <!-- Champs du formulaire -->
+        <div class="form-group">
+            {{ form.photo.label(class="form-control-label") }}
+            {{ form.photo(class="form-control-file") }}
+        </div>
+        <div class="form-group">
+            {{ form.modele.label(class="form-control-label") }}
+            {{ form.modele(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.marque.label(class="form-control-label") }}
+            {{ form.marque(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.taille.label(class="form-control-label") }}
+            {{ form.taille(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.couleur.label(class="form-control-label") }}
+            {{ form.couleur(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.origine.label(class="form-control-label") }}
+            {{ form.origine(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.type_moulin.label(class="form-control-label") }}
+            {{ form.type_moulin(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.poivre_nom.label(class="form-control-label") }}
+            {{ form.poivre_nom(class="form-control", id="poivre_nom") }}
+            <small class="form-text text-muted">
+                Vous ne trouvez pas l'épice ? <a href="#" id="ajouterPoivreLink">Ajoutez-en une nouvelle</a>.
+            </small>
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-success") }}
+        </div>
+    </form>
+
+    <!-- Modal pour ajouter un nouveau poivre -->
+    {% include 'ajouter_poivre_modal.html' %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $("#poivre_nom").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{{ url_for('poivres_autocomplete') }}",
+                    data: {
+                        term: request.term
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2,
+        });
+
+        {% if show_poivre_modal %}
+            $('#ajouterPoivreModal').modal('show');
+        {% endif %}
+
+        $('#ajouterPoivreLink').click(function(event) {
+            event.preventDefault();
+            $('#ajouterPoivreModal').modal('show');
+        });
+
+        $('#ajouterPoivreForm').on('submit', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{{ url_for('ajouter_poivre_ajax') }}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        // Mettre à jour le champ poivre_nom avec le nouveau poivre
+                        $('#poivre_nom').val(response.nom);
+                        // Fermer la modal
+                        $('#ajouterPoivreModal').modal('hide');
+                    } else {
+                        alert("Erreur : " + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Une erreur s'est produite lors de l'ajout du poivre.");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

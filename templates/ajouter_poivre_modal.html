@@ -1,0 +1,43 @@
+<div class="modal fade" id="ajouterPoivreModal" tabindex="-1" role="dialog" aria-labelledby="ajouterPoivreModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form id="ajouterPoivreForm">
+          {{ poivre_form.hidden_tag() }}
+          <div class="modal-header">
+            <h5 class="modal-title" id="ajouterPoivreModalLabel">Ajouter une nouvelle épice</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Champs du formulaire pour le poivre -->
+            <div class="form-group">
+              {{ poivre_form.nom.label(class="form-control-label") }}
+              {{ poivre_form.nom(class="form-control") }}
+            </div>
+            <div class="form-group">
+              {{ poivre_form.description.label(class="form-control-label") }}
+              {{ poivre_form.description(class="form-control") }}
+            </div>
+            <div class="form-group">
+              {{ poivre_form.pays_origine.label(class="form-control-label") }}
+              {{ poivre_form.pays_origine(class="form-control") }}
+            </div>
+            <div class="form-group">
+              {{ poivre_form.intensite.label(class="form-control-label") }}
+              {{ poivre_form.intensite(class="form-control") }}
+            </div>
+            <div class="form-group">
+              {{ poivre_form.utilisations.label(class="form-control-label") }}
+              {{ poivre_form.utilisations(class="form-control") }}
+            </div>
+          </div>
+          <div class="modal-footer">
+            {{ poivre_form.submit(class="btn btn-primary") }}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
