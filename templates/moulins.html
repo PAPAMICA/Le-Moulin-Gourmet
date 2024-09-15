@@ -3,9 +3,9 @@
 {% block title %}Vos moulins à épices{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row">
-        <h1>Vos moulins à épices</h1>
-        <a href="{{ url_for('ajouter_moulin') }}" class="btn btn-primary mb-3 w-100 w-sm-auto">Ajouter un Moulin</a>
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-3">
+        <h1 class="text-center text-sm-left w-100 w-sm-auto">Vos moulins à épices</h1>
+        <a href="{{ url_for('ajouter_moulin') }}" class="btn btn-primary mt-2 mt-sm-0 w-100 w-sm-auto">Ajouter un Moulin</a>
     </div>
 
     <form method="post" class="form-inline mb-3">
@@ -56,16 +56,19 @@
     </div>
 
     <style>
-        @media (max-width: 576px) {
+        @media (max-width: 575.98px) {
             .moulin-photo {
                 width: 100px;
                 height: auto;
             }
-            .btn-primary {
-                width: 100%;
+            h1 {
+                font-size: 1.5rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
-        @media (min-width: 577px) {
+        @media (min-width: 576px) {
             .moulin-photo {
                 width: 150px;
                 height: auto;
