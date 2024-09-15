@@ -23,12 +23,12 @@
 
     <div class="row">
         {% for moulin in moulins %}
-            <div class="col-md-4">
+            <div class="col-12 col-sm-6 col-md-4">
                 <div class="card mb-4">
                     {% if moulin.photo %}
-                        <img class="card-img-top d-block mx-auto" src="{{ url_for('static', filename=moulin.photo) }}" alt="{{ moulin.modele }}" style="max-width: 150px;">
+                        <img class="card-img-top d-block mx-auto" src="{{ url_for('static', filename=moulin.photo) }}" alt="{{ moulin.modele }}">
                     {% else %}
-                        <img class="card-img-top d-block mx-auto" src="{{ url_for('static', filename='images/default.png') }}" alt="Image par défaut" style="max-width: 150px;">
+                        <img class="card-img-top d-block mx-auto" src="{{ url_for('static', filename='images/default.png') }}" alt="Image par défaut">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title text-center">{{ moulin.marque }} - {{ moulin.modele }}</h5>
@@ -48,7 +48,6 @@
                         {% else %}
                             <p class="card-text">Aucune épice associée à ce moulin.</p>
                         {% endif %}
-
                         <a href="{{ url_for('editer_moulin', id=moulin.id) }}" class="btn btn-secondary d-block mx-auto">Éditer</a>
                     </div>
                 </div>
