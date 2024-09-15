@@ -163,7 +163,7 @@
                                             '<img class="card-img-top" src="' + moulin.photo + '" alt="' + moulin.modele + '">' +
                                             '<div class="card-body">' +
                                                 '<h5 class="card-title">' + moulin.marque + ' - ' + moulin.modele + '</h5>' +
-                                                '<p class="card-text"><strong>Taille :</strong> ' + moulin.taille + '</p>' +
+                                                '<p class="card-text"><strong>Taille :</strong> ' + (moulin.taille ? moulin.taille : 'Non spécifiée') + '</p>' +
                                                 '<p class="card-text"><strong>Couleur :</strong> ' + moulin.couleur + '</p>' +
                                                 '<p class="card-text"><strong>Origine :</strong> ' + moulin.origine + '</p>' +
                                                 '<p class="card-text"><strong>Type :</strong> ' + moulin.type_moulin + '</p>' +
