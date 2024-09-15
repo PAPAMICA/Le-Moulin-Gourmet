@@ -3,9 +3,9 @@
 {% block title %}Vos moulins à épices{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
         <h1>Vos moulins à épices</h1>
-        <a href="{{ url_for('ajouter_moulin') }}" class="btn btn-primary mb-3">Ajouter un Moulin</a>
+        <a href="{{ url_for('ajouter_moulin') }}" class="btn btn-primary mb-3 w-100 w-sm-auto">Ajouter un Moulin</a>
     </div>
 
     <form method="post" class="form-inline mb-3">
